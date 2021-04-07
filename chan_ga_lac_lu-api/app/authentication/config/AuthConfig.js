@@ -1,0 +1,8 @@
+
+module.exports = {
+    JWT_TOKEN_HASH_ALGO: 'HS256',
+    JWT_TOKEN_EXPIRATION: 18000000,
+    JWT_SECRET_OR_KEY: 'vdkhoa7498',
+    JWT_TOKEN_PREFIX: 'JWT'
+  }
+  
