@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { AutoComplete  } from 'antd';
 import './input.css'
-import {useSelector} from 'react-redux'
 
 
 const InputAutoComplete = (props) => {
-    
+  const onChangeValue = (value) =>{
+    props.setValue(value)
+  }
 
     return (
       <AutoComplete
-        onChange={(value)=>{props.onChange(value)}}
+        onChange={onChangeValue}
         style={{
           width: 200,
           marginRight: 10

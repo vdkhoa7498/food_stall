@@ -1,6 +1,6 @@
 const express = require("express");
 const AuthController = require("../controllers/AuthControllers");
-const UserController = require("../controllers/UserControllers")
+const UserController = require("../../mongo/controllers/UserController")
 const passport = require("passport")
 
 const {Router} = express;
@@ -11,8 +11,8 @@ AuthRouter.post('/register', (req, res) => {
   AuthController.register(req, res);
 });
 
-AuthRouter.post('/login', (req, res, next) => {
-  AuthController.login(req, res, next);
+AuthRouter.post('/login', (req, res) => {
+  AuthController.login(req, res);
 });
 
 /**

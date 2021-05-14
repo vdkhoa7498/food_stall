@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {useDispatch} from 'react-redux'
 import {loginAction} from '../action/authAction'
 import { Form, Input, Button, Checkbox } from 'antd';
+import {SERVER_IP} from '../config/index'
 const layout = {
   labelCol: {
     span: 8,
@@ -25,7 +26,7 @@ const Welcome = () => {
     const [password, setPassword] = useState('')
 
   const onFinish = (values) => {
-    console.log('Success:', values);
+    dispatch(loginAction(values.username, values.password))
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -75,7 +76,6 @@ const Welcome = () => {
 
       <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit" style={{width: 150}}
-            onClick={()=>{dispatch(loginAction)}}
         >
           Submit
         </Button>
@@ -83,7 +83,7 @@ const Welcome = () => {
         
       </Form.Item>
       <Form.Item {...tailLayout}>
-        <a href={`localhost:8000/user/auth/facebook`} style={{width: '100%'}}>
+        <a href={`${SERVER_IP}/user/auth/facebook`} style={{width: '100%'}}>
             <Button type="primary" htmlType="submit" style={{width: 150}}>
                 Login with FB
             </Button>

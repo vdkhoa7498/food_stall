@@ -12,12 +12,12 @@ export const initCustomer = () => {
       let resultPhone = []
       res.data.map(d =>{
         resultName = [...resultName,{
-          id: d.customer_id,
-          value: d.customer_name
+          id: d._id,
+          value: d.customerName
         }]
         resultPhone = [...resultPhone,{
-            id: d.customer_id,
-            value: d.phone
+            id: d._id,
+            value: d.customerPhone
           }]
       })
       dispatch(getCustomersName(resultName))
@@ -40,3 +40,4 @@ export const initCustomer = () => {
     };
   }
 };
+

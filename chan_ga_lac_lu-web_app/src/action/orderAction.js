@@ -1,51 +1,74 @@
-import { checkToPostCustomer } from "../services/customer.services";
-import { AddNewOrder } from "../services/order.services";
-import { AddNewOrdering } from "../services/ordering.services";
 
+import { addOrderEmit } from "../socketio/emit";
+import { AddNewOrderService} from "../services/order.services"
+import { addCustomer } from "../services/customer.services"
 export const ADD_ORDER = "ADD_ORDER";
 export const CHANGE_STATUS_ORDER= "CHANGE_STATUS_ORDER";
+export const SET_ORDER = "SET_ORDER"
 
-
-export const addOrder = (orderingList, note, total, customerInfo) => {
+export const setOrderListAction = (orderList) => {
+  
   return (dispatch) => {
-    checkToPostCustomer(customerInfo.name, customerInfo.phone)
-    .then(res=>{
-      console.log(res)
-      // AddNewOrder(res.data.customer_id, note, null, 'Chưa Duyệt', total)
-      // .then(res=>{
-      //   orderingList.map(order =>{
-      //     AddNewOrdering(res.data.order_id, order.content, order.quantity, order.ordering_total)
-      //     .then(res)
-      //     .catch(err=>{console.log(err)})
-      //   })
-      // })
-      // .catch(err=>{console.log(err)})
-    })
-    .catch(err=>console.log(err))
-
-    // addOrder_(orderingList, note, total, customerInfo)
+    dispatch(setOrder(orderList))
   };
 
-  function addOrder_(orderingList, total, customerInfo) {
+  function setOrder(orderList) {
     return {
-      type: ADD_ORDER,
-      orderingList: [],
-      total: 0,
-      customerInfo: {},
-      status: 'Chưa duyệt'
+      type: SET_ORDER,
+      orderList: orderList,
     };
   }
 };
 
-export const changeStatusOrder = (username, password) => {
-  return (dispatch) => {
+
+
+// export const addOrderAction = (customerInfo, note, total, orderingList, customersPhone) => {
+  
+//   return (dispatch) => {
+
     
+//   };
+
+//   function addOrder(customerId, customerInfo, orderingList, note, total) {
+//     return {
+//       type: ADD_ORDER,
+//       customerId: customerId, 
+//       customerInfo: customerInfo, 
+//       purchase: orderingList,
+//       status: "Chưa duyệt",
+//       shipper: "",
+//       note: note, 
+//       total: total, 
+//     };
+//   }
+// };
+
+export const changeStatusOrder = (orderId, status) => {
+  return (dispatch) => {
+    dispatch(changeStatusOrder_(orderId, status))
   };
 
   
-  function changeStatusOrder_() {
+  function changeStatusOrder_(orderId, status) {
     return {
       type: CHANGE_STATUS_ORDER,
+      orderId: orderId,
+      status: status
+    };
+  }
+};
+
+export const changeShipper = (orderId, shipper) => {
+  return (dispatch) => {
+    dispatch(changeStatusOrder_(orderId, shipper))
+  };
+
+  
+  function changeStatusOrder_(orderId, shipper) {
+    return {
+      type: CHANGE_STATUS_ORDER,
+      orderId: orderId,
+      shipper: shipper
     };
   }
 };

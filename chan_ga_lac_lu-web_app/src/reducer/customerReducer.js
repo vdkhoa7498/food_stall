@@ -30,5 +30,8 @@ import {
         return state;
     }
   };
-  
-  export {customersNameReducer, customersPhoneReducer};
+
+
+  export {
+    customersNameReducer, 
+    customersPhoneReducer,}

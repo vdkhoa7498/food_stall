@@ -1,13 +1,36 @@
 import { socket } from ".";
-import SOCKET_ACTION from "../utils/enums"
+import { addCustomer } from "../services/customer.services"
 
-export const getRooms = () => {
-    socket.emit("get rooms");
+export const addOrderEmit = (customerInfo, note, total, orderingList, customersPhone) => {
+    let customerId = ""
+    const customer = customersPhone.find(item => item.value === customerInfo.customerPhone)
+    if(customer){
+        customerId = customer.id
+    }
+    else{
+        addCustomer(customerInfo.customerName, customerInfo.customerPhone, "", customerInfo.customerAddress)
+        .then(res=>{
+        customerId = res.data._id;
+        })
+    }
+    const data = {
+        customerId: customerId, 
+        customerInfo: customerInfo, 
+        purchase: orderingList,
+        status: "Chưa duyệt",
+        shipper: "",
+        note: note, 
+        total: total, 
+      }
+    // AddNewOrderService(customerId, customerInfo, orderingList, note, total)
+    // .catch(err => console.log(err))
+    socket.emit("send-new-order", data);
 }
 
-// export const onReconnect = (gameInfo, userInfo) => {
-//     if (!socket.findRivalSuccess) {
-//         socket.findRivalSuccess = true;
-//         socket.emit(SOCKET_ACTION.ON_RECONNECT, { gameInfo, userInfo });
-//     }
-// }
+export const initDataEmit = (data) =>{
+    socket.emit("init-data")
+}
+
+export const changeOrderStatusEmit = (orderId, status) =>{
+    socket.emit("change-order-status", {orderId: orderId, status: status})
+}

@@ -1,4 +1,6 @@
-import { getCities, getDistricts, getStreets } from "../services/address.services";
+import {  getCities, 
+          getDistricts, 
+          getStreets, } from "../services/address.services";
 
 export const GET_STREETS = "GET_STREETS";
 export const GET_DISTRICTS = "GET_DISTRICTS";
@@ -9,41 +11,21 @@ export const initAddress = () => {
     
     getStreets()
     .then(res=>{
-      let result = []
-      res.data.map(d =>{
-        result = [...result,{
-          id: d.street_id,
-          value: d.street_name,
-          district_id: d.district_id
-        }]
-      })
-      dispatch(getStreets_(result))
+      dispatch(getStreets_(res.data))
     })
     .catch(err=>console.log(err))
 
     getDistricts()
     .then(res=>{
-      let result = []
-      res.data.map(d =>{
-        result = [...result,{
-          id: d.district_id,
-          value: d.district_name
-        }]
-      })
-      dispatch(getDistricts_(result))
+      
+      dispatch(getDistricts_(res.data))
     })
     .catch(err=>console.log(err))
 
     getCities()
     .then(res=>{
-      let result = []
-      res.data.map(d =>{
-        result = [...result,{
-          id: d.city_id,
-          value: d.city_name
-        }]
-      })
-      dispatch(getCities_(result))
+      
+      dispatch(getCities_(res.data))
     })
     .catch(err=>console.log(err))
   };

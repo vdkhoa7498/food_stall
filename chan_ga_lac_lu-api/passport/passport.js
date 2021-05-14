@@ -63,23 +63,7 @@ const facebookStrategy = new FacebookStrategy(
 // token strategy
 // passport.use(passportJWTStrategy);
 
-// Passport for Google Oauth 2
-passport.use('GoogleAuth', googleStrategy);
 
 // Passport for Facebook Oauth 2
 passport.use('FacebookAuth', facebookStrategy);
 
-// // config passport
-// module.exports = function (passport) {
-//   // token strategy
-//   passport.use(passportJWTStrategy);
-//
-//   // Passport for Google Oauth 2
-//   passport.use('GoogleAuth', googleStrategy);
-//
-//   // Passport for Facebook Oauth 2
-//   passport.use('FacebookAuth', facebookStrategy);
-//
-//   // return configured passport
-//   return passport;
-// };

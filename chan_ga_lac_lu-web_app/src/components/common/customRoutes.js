@@ -2,23 +2,17 @@ import React, { Component } from "react";
 import { Route, Redirect } from "react-router-dom";
 import Header from "./header";
 import Footer from "./footer";
+import {isAuthenticated} from "../../utils/utils";
 
-export const SRoute = ({ component: Component, ...rest }) => {
+export const PrivateRoute = ({ component: Component, ...rest }) => {
   const token = JSON.parse(localStorage.getItem("token"));
   return (
     <>
-      {token != null ? (
+      {isAuthenticated() ? (
         <Route
           {...rest}
           render={(props) => (
-            <>
-              <Header></Header>
-              <div className="clearfix" />
-              <div className="content">
-                <Component {...props}></Component>
-              </div>
-              <Footer></Footer>
-            </>
+            <Component {...props}></Component>
           )}
         ></Route>
       ) : (

@@ -1,7 +1,7 @@
 import Axios from "axios";
-
+import {SERVER_IP} from '../config/index'
 let axios = Axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: `${SERVER_IP}`,
   headers: { "Content-Type": "application/json" },
 });
 

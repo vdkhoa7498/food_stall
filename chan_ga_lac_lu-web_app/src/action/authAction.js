@@ -1,5 +1,5 @@
 import { message} from 'antd';
-import { Login } from '../services/user.services';
+import { login } from '../services/user.services';
 
 export const LOG_IN_REQUEST = "LOG_IN_REQUEST";
 export const LOG_IN_SUCCESS = "LOG_IN_SUCCESS";
@@ -10,10 +10,12 @@ export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 export const REGISTER_FAILURE = "REGISTER_FAILURE";
 
 export const loginAction = (username, password) => {
+  console.log("dispatch login action")
   return (dispatch) => {
     dispatch(request());
-    Login(username, password)
+    login(username, password)
       .then((res) => {
+        console.log(res)
         localStorage.setItem(
           "token",
           JSON.stringify(res.data.access_token)

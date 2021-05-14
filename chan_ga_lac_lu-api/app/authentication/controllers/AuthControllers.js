@@ -1,111 +1,106 @@
 const jwt = require('jsonwebtoken');
-const userModel = require('../../../models/user.model');
-const AuthConfig = require("../config/AuthConfig");
-const bcrypt = require('bcrypt');
-const JwtUtils = require("../../../utils/JwtUtils");
-const UserController = require("./UserControllers")
+const MongoModels = require('../../mongo/db/models/index');
+const UserController = require('../../mongo/controllers/UserController')
+const AuthConfig = require("../config/AuthConfig")
+// const JwtUtils = require('../../../utils/jwtUtils');
+
+const User = MongoModels.UserModel;
 
 
 // User register
-const register = (req, res) => {
-    // if (UserController.isValidUser(req)) {
-    //     const username = req.body.username || '';
-    //     userModel.findOneUsername({ username: username }, (error, user) => {
-    //         // insert only if user not exist
-    //         if (error) {
-    //             res.status(401).send({
-    //                 success: false,
-    //                 message: error.message,
-    //             });
-    //         } else {
-    //             if (!user) {
-    //                 const userModel = UserController.userFromreq(req);
-    //                 userModel.save((error, newUser) => {
-    //                     if (error) {
-    //                         res.status(401).send({
-    //                             success: false,
-    //                             message: error.message,
-    //                         });
-    //                     } else {
+const register = (request, response) => {
+    if (UserController.isValidUser(request)) {
+        const username = request.body.username || '';
+        User.findOne({ username: username }, (error, user) => {
+            // insert only if user not exist
+            if (error) {
+                response.status(401).send({
+                    success: false,
+                    message: error.message,
+                });
+            } else {
+                if (!user) {
+                    const userModel = UserController.userFromRequest(request);
+                    userModel.save((error, newUser) => {
+                        if (error) {
+                            response.status(400).send({
+                                success: false,
+                                message: error.message,
+                            });
+                        } else {
 
-    //                         const verifyEmailToken = JwtUtils.createAuthToken(newUser._id)
-    //                         mail.sendActivateUserEmail(newUser.email, newUser.fullName, verifyEmailToken)
-    //                             .then(() => {
-    //                                 res.status(200).send({
-    //                                     success: true,
-    //                                     user: newUser,
-    //                                 });
-    //                             })
-    //                     }
-    //                 });
-    //             } else {
-    //                 res.status(401).send({
-    //                     success: false,
-    //                     message: "User not exist",
-    //                 });
-    //             }
-    //         }
-    //     });
-    // } else {
-    //     return res.status(401).send({
-    //         success: false,
-    //         message: 'Bad req',
-    //     });
-    // }
-}
-
-const login = async(req, res) => {
-    const username = req.body.username || '';
-    const password = req.body.password || '';
-    if (username && password) {
-
-        const users = await userModel.findOneUsername(username);
-        const user = users[0]
-        if (user === null){
-            res.status(401).send({
-                success: false,
-                message: "User not exist",
-            });
-        }
-        else{
-            bcrypt.compare(password, user.password, function(err, result) {
-                if (result && !err) {
-                    // if user is found and password is right create a token
-                    // algorithm: process.env.JWT_TOKEN_HASH_ALGO
-                    const token = jwt.sign({ user_id: user.user_id, fullName: user.fullName, role: user.role }, AuthConfig.JWT_SECRET_OR_KEY, {
-                        expiresIn: AuthConfig.JWT_TOKEN_EXPIRATION,
-                    });
-
-                    
-                    // return the information including token as JSON
-                    res.status(200).send({
-                        success: true,
-                        user: user,
-                        access_token: `${token}`,
+                            response.status(201).send({
+                                success: true,
+                                user: newUser,
+                            });
+                        }
                     });
                 } else {
-                    // let hash_
-                    // bcrypt.genSalt(10, function(err, salt) {
-                    //     bcrypt.hash('123', salt, function(err, hash) {
-                    //         hash_=hash
-                    //         console.log(hash)
-                    //     });
-                    // });
-
-                    res.status(401).send({
+                    response.status(400).send({
                         success: false,
-                        message: "Wrong password",
+                        message: "User is existed",
                     });
                 }
-            });
-            
-        }
-        
-        
+            }
+        });
     } else {
-        return res.status(401).send({
+        return response.status(400).send({
             success: false,
-            message: "Bad req",
+            message: 'Bad request',
+        });
+    }
+}
+
+const login = async(request, response) => {
+    const username = request.body.username || '';
+    const password = request.body.password || '';
+    if (username && password) {
+        User.findOne({ username: username }, (error, user) => {
+            // check if user exist
+            if (error) {
+                response.status(401).send({
+                    success: false,
+                    message: error.message,
+                });
+            } else {
+                if (!user) {
+                    response.status(400).send({
+                        success: false,
+                        message: "User is not existed",
+                    });
+                } else {
+                    // check if password matches
+                    user.comparePassword(password, (error, isMatch) => {
+                        if (isMatch && !error) {
+                            // if user is found and password is right create a token
+                            // algorithm: process.env.JWT_TOKEN_HASH_ALGO
+                            const token = jwt.sign({ userId: user._id }, AuthConfig.JWT_SECRET_OR_KEY, {
+                                expiresIn: AuthConfig.JWT_TOKEN_EXPIRATION,
+                            });
+
+                            //console.log(user)
+
+                            // return the information including token as JSON
+                            response.status(200).send({
+                                success: true,
+                                user: user,
+                                token: `${token}`,
+                            });
+                        } else {
+
+                            response.status(400).send({
+                                success: false,
+                                message: "Wrong password",
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    } else {
+        return response.status(400).send({
+            success: false,
+            message: "Bad request",
         });
     }
 };

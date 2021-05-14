@@ -1,14 +1,14 @@
 import axios from '../utils/axios'
 
 
-export const AddNewOrder = (customer_id, note, shipper, status, total)=>{
+export const AddNewOrderService = (customerId,customerInfo,orderingList,note, total)=>{
     return(
         axios.post(`/orders`,
-            customer_id, 
-            note, 
-            shipper, 
-            status, 
-            total
+        customerId,
+        customerInfo,
+        orderingList,
+        note, 
+        total,
         )
     )
 }

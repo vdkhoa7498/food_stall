@@ -9,6 +9,10 @@ const http = require("http");
 const server = http.createServer(app);
 
 const AuthRouter = require('./app/authentication/routes/AuthRouter');
+const MongoDBConnect = require("./app/mongo/db/connect/MongoDBConnect");
+
+MongoDBConnect.connect();
+require("./passport/passport")
 
 app.use(morgan('dev'));
 app.use(express.json())
@@ -22,9 +26,10 @@ app.get('/', function(req,res){
     })
 })
 
-app.use('/user', AuthRouter);
+app.use('/auth', AuthRouter);
 
-app.use('/foods', require('./routes/food.route'));
+app.use('/main-foods', require('./routes/mainFood.route'));
+app.use('/snack-foods', require('./routes/snackFood.route'));
 app.use('/customers', require('./routes/customer.route'));
 app.use('/cities', require('./routes/city.route'));
 app.use('/districts', require('./routes/district.route'));
